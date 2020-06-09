@@ -17,7 +17,7 @@ export default class extends BlazeComponent {
     }
     data() {
         return {
-            interval: 100,
+            skipFrames:0,
             running: false,
             tips: "Snake Game"
         }
@@ -68,11 +68,11 @@ export default class extends BlazeComponent {
             }
             console.log(this.direction)
         })
-        setInterval(() => {
-            if (this.$data.running) {
-                this.onFrame();
-            }
-        }, this.$data.interval);
+        // setInterval(() => {
+        //     if (this.$data.running) {
+        //         this.onFrame();
+        //     }
+        // }, this.$data.interval);
     }
 
     checkGameover(nextStep) {
@@ -92,7 +92,13 @@ export default class extends BlazeComponent {
         return false
     }
 
-    onFrame() {
+    onFrame(frames) {
+        if(!this.$data.running){
+            return;
+        }
+        if(frames%(1+this.$data.skipFrames)!=0){
+            return;
+        }
         if (this.bugPosition[0] == -1) {
             this.score = 0;
             // this.bugPosition[0] = this.getRandom(0, this.xSize - 1);
@@ -140,15 +146,16 @@ export default class extends BlazeComponent {
             this.score += 1;
         }
         else {
-            this.snakes.pop();
+            var _s=this.snakes.pop();
+            this.drawer.delBlock(_s[0],_s[1]);
         }
 
         //Draw
-        this.drawer.clearAll();
+        //this.drawer.clearAll();
         this.snakes.forEach(sn => {
             this.drawer.setBlock(sn[0], sn[1]);
         })
-        this.drawer.setBlock(this.bugPosition[0], this.bugPosition[1],"#ff0000");
+        this.drawer.setBlock(this.bugPosition[0], this.bugPosition[1]);
 
         this.$data.tips = "Score:" + this.score;
     }
@@ -158,7 +165,7 @@ export default class extends BlazeComponent {
                 <h1>Snake Game</h1>
                 <div>{this.$data.tips}</div>
                 {this.$data.running?null:(<button onClick={() => { this.$data.running = true }}>start</button>)}
-                <Drawer style={{marginTop:20}} ref={instance => { this.drawer = instance }} xSize={this.xSize} ySize={this.ySize}></Drawer>
+                <Drawer onFrame={frames=>{this.onFrame(frames)}} style={{marginTop:20}} ref={instance => { this.drawer = instance }} xSize={this.xSize} ySize={this.ySize}></Drawer>
             </div>
         )
     }
