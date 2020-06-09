@@ -18,10 +18,18 @@ export default class Drawer extends BlazeComponent {
             }
         }
         this.display=r;
+
+        this.colorStore={
+            1:"#444",
+        }
     }
 
     data() {
         return { display: null };
+    }
+
+    regColor(code,color){
+        this.colorStore[code]=color;
     }
 
     onFrame(){
@@ -29,6 +37,7 @@ export default class Drawer extends BlazeComponent {
         requestAnimationFrame(()=>{this.onFrame()});
         for(var y in this.display){
             for(var x in this.display[y]){
+                let code=this.display[y][x]
                 if(this.display[y][x]==0){
                     this.ctx.fillStyle="#fff";
                     this.ctx.fillRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
@@ -36,8 +45,9 @@ export default class Drawer extends BlazeComponent {
                     this.ctx.strokeStyle="#eee";
                     this.ctx.strokeRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
                 }
-                else if(this.display[y][x]==1){
-                    this.ctx.fillStyle="#444";
+                let color=this.colorStore[code];
+                if(color){
+                    this.ctx.fillStyle=color;
                     this.ctx.fillRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
                 }
             }
@@ -49,8 +59,13 @@ export default class Drawer extends BlazeComponent {
         requestAnimationFrame(()=>{this.onFrame()});
     }
 
-    setBlock(x, y, color) {
-        this.display[y][x]=1;
+    setBlock(x, y, type) {
+        if(!type){
+            this.display[y][x]=1;
+        }
+        else{
+            this.display[y][x]=type;
+        }
     }
 
     delBlock(x, y) {
@@ -73,25 +88,14 @@ export default class Drawer extends BlazeComponent {
 
         this.display = r;
     }
-
-    getXItem = (yItem) => {
-        return yItem.map(xItem => {
-            return (<td style={{ width: 12, height: 12, backgroundColor: xItem == 1 ? "white" : "black" }}></td>)
-        })
-    }
-    getYItem = () => {
-        return this.$data.display.map(yItem => {
-            return (<tr>{this.getXItem(yItem)}</tr>)
-        });
-    }
     render() {
         return (
             <div style={{ width: "100%" }} {...this.props}>
-                <canvas ref={instance => { this.canvas = instance }} width={this.props.xSize * this.scaling} height={this.props.ySize * this.scaling} style={{ border: "1px solid #000" }}></canvas>
-                {/* <table border={1} rules="none" style={{margin:"auto"}}>
-                {this.getYItem()}
-            </table> */}
-
+                <canvas 
+                ref={instance => { this.canvas = instance }} 
+                width={this.props.xSize * this.scaling} 
+                height={this.props.ySize * this.scaling} 
+                style={{ border: "1px solid #000" }}></canvas>
             </div>)
     }
 }
