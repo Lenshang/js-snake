@@ -1,69 +1,82 @@
 import React from 'react';
-import {BlazeComponent} from 'blazereact';
+import { BlazeComponent } from 'blazereact';
 
-export default class Drawer extends BlazeComponent{
-    constructor(props){
+export default class Drawer extends BlazeComponent {
+    constructor(props) {
         super(props)
+        this.canvas = null;
+        this.scaling=10;
     }
-    
-    data(){
-        let r=[];
 
-        for(var y=0;y<this.props.ySize;y++){
-            for(var x=0;x<this.props.xSize;x++){
-                if(!r[y]){
-                    r[y]=[];
+    data() {
+        let r = [];
+        for (var y = 0; y < this.props.ySize; y++) {
+            for (var x = 0; x < this.props.xSize; x++) {
+                if (!r[y]) {
+                    r[y] = [];
                 }
 
-                r[y][x]=0;
+                r[y][x] = 0;
             }
         }
 
         return {
-            display:r
+            display: r
         };
     }
-
-    setBlock(x,y){
-        this.$data.display[y][x]=1
-    }
-
-    delBlock(x,y){
-        this.$data.display[y][x]=0
-    }
-
-    clearAll(){
-        let r=[];
-
-        for(var y=0;y<this.props.ySize;y++){
-            for(var x=0;x<this.props.xSize;x++){
-                if(!r[y]){
-                    r[y]=[];
-                }
-
-                r[y][x]=0;
-            }
+    
+    setBlock(x, y,color) {
+        //this.$data.display[y][x]=1
+        var ctx = this.canvas.getContext("2d");
+        if(!color){
+            ctx.fillStyle = "#000";
         }
-
-        this.$data.display=r;
+        else{
+            ctx.fillStyle = color;
+        }
+        ctx.fillRect(x*this.scaling, y*this.scaling, this.scaling, this.scaling);
     }
 
-    getXItem=(yItem)=>{
-        return yItem.map(xItem=>{
-            return (<td style={{width:20,height:20,backgroundColor:xItem==1?"black":null}}></td>)
+    delBlock(x, y) {
+        //this.$data.display[y][x]=0
+    }
+
+    clearAll() {
+        var ctx = this.canvas.getContext("2d");
+        ctx.clearRect(0,0,this.props.xSize * this.scaling,this.props.ySize * this.scaling);
+        // let r = [];
+
+        // for (var y = 0; y < this.props.ySize; y++) {
+        //     for (var x = 0; x < this.props.xSize; x++) {
+        //         if (!r[y]) {
+        //             r[y] = [];
+        //         }
+
+        //         r[y][x] = 0;
+        //     }
+        // }
+
+        // this.$data.display = r;
+    }
+
+    getXItem = (yItem) => {
+        return yItem.map(xItem => {
+            return (<td style={{ width: 12, height: 12, backgroundColor: xItem == 1 ? "white" : "black" }}></td>)
         })
     }
-    getYItem=()=>{
-        return this.$data.display.map(yItem=>{
+    getYItem = () => {
+        return this.$data.display.map(yItem => {
             return (<tr>{this.getXItem(yItem)}</tr>)
         });
     }
-    render(){
+    render() {
         return (
-        <div style={{width:"100%"}}>
-            <table border={1} rules="none" style={{margin:"auto"}}>
+            <div style={{ width: "100%" }} {...this.props}>
+                <canvas ref={instance=>{this.canvas=instance}} width={this.props.xSize * this.scaling} height={this.props.ySize * this.scaling} style={{border:"1px solid #000"}}></canvas>
+                {/* <table border={1} rules="none" style={{margin:"auto"}}>
                 {this.getYItem()}
-            </table>
-        </div>)
+            </table> */}
+
+            </div>)
     }
 }

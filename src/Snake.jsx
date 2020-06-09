@@ -10,14 +10,14 @@ export default class extends BlazeComponent {
         this.bugPosition = [-1, -1]
         this.snakes = [];
         this.xSize = 20;
-        this.ySize = 20;
+        this.ySize = 15;
         this.score = 0;
 
         this.nextDirection="";
     }
     data() {
         return {
-            interval: 200,
+            interval: 100,
             running: false,
             tips: "Snake Game"
         }
@@ -122,6 +122,11 @@ export default class extends BlazeComponent {
         if (this.checkGameover(nextStep)) {
             //GameOver
             this.$data.running = false;
+            this.direction = "right";
+            this.bugPosition = [-1, -1]
+            this.snakes = [];
+            this.score = 0;
+            this.nextDirection="";
             this.drawer.clearAll();
             this.$data.tips = "Game Over!";
             return;
@@ -143,17 +148,17 @@ export default class extends BlazeComponent {
         this.snakes.forEach(sn => {
             this.drawer.setBlock(sn[0], sn[1]);
         })
-        this.drawer.setBlock(this.bugPosition[0], this.bugPosition[1]);
+        this.drawer.setBlock(this.bugPosition[0], this.bugPosition[1],"#ff0000");
 
         this.$data.tips = "Score:" + this.score;
     }
     render() {
         return (
-            <div style={{ width: 600, margin: "auto", textAlign: "center" }}>
+            <div style={{ width: "100%", margin: "auto", textAlign: "center" }}>
                 <h1>Snake Game</h1>
                 <div>{this.$data.tips}</div>
                 {this.$data.running?null:(<button onClick={() => { this.$data.running = true }}>start</button>)}
-                <Drawer ref={instance => { this.drawer = instance }} xSize={this.xSize} ySize={this.ySize}></Drawer>
+                <Drawer style={{marginTop:20}} ref={instance => { this.drawer = instance }} xSize={this.xSize} ySize={this.ySize}></Drawer>
             </div>
         )
     }
