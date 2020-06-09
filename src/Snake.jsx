@@ -37,7 +37,7 @@ export default class extends BlazeComponent {
         return {
             skipFrames: 5,
             running: false,
-            tips: "Snake Game"
+            tips: "Press Button TO Start!"
         }
     }
     getRandom(x, y) {
@@ -314,7 +314,7 @@ export default class extends BlazeComponent {
                 this.drawer.setBlock(sn[0], sn[1]);
             }
         })
-        
+
         this.drawer.setBlock(this.bugPosition[0], this.bugPosition[1]);
 
         this.$data.tips = "Score1:" + this.player1.score + " Score2:" + this.player2.score;
@@ -323,7 +323,9 @@ export default class extends BlazeComponent {
         return (
             <div style={{ width: "100%", margin: "auto", textAlign: "center" }}>
                 <h1>Snake Game</h1>
-                <div>{this.$data.tips}</div>
+                <div>by LenShang</div>
+                <div>git:<a href="https://github.com/Lenshang/js-snake" target="blank">https://github.com/Lenshang/js-snake</a></div>
+                <div style={{marginTop:10}}>{this.$data.tips}</div>
                 {this.$data.running ? null : (
                     <div>
                         <button onClick={() => { this.$data.running = true; this.player2.direction = "" }}>start 1p</button>
