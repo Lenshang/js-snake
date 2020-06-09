@@ -37,7 +37,8 @@ export default class extends BlazeComponent {
         return {
             skipFrames: 5,
             running: false,
-            tips: "Press Button TO Start!"
+            tips: "Press Button TO Start!",
+            imgMode:false
         }
     }
     getRandom(x, y) {
@@ -113,6 +114,23 @@ export default class extends BlazeComponent {
         this.drawer.regColor(3, "#44f");
 
         this.drawer.regColor(31, "#eef");
+
+
+        let img=new Image(120,120);
+        img.src="http://kagamine.cn/snake/k/right.png"
+        this.drawer.regColor(25,img);
+        
+        let img2=new Image(120,120);
+        img2.src="http://kagamine.cn/snake/k/left.png"
+        this.drawer.regColor(26,img2);
+
+        img=new Image(120,120);
+        img.src="http://kagamine.cn/snake/k/right2.png"
+        this.drawer.regColor(35,img);
+        
+        img2=new Image(120,120);
+        img2.src="http://kagamine.cn/snake/k/left2.png"
+        this.drawer.regColor(36,img2);
         // setInterval(() => {
         //     if (this.$data.running) {
         //         this.onFrame();
@@ -165,12 +183,12 @@ export default class extends BlazeComponent {
             this.player1.direction = "right";
             this.player1.snakes.push([5, 5]);
             this.player1.snakes.push([4, 5]);
+            this.player2.snakes = [];
+            this.player2.footprint = [];
+            this.player2.score = 0;
+            this.player2.nextDirection = "";
 
             if (this.player2.direction) {
-                this.player2.snakes = [];
-                this.player2.footprint = [];
-                this.player2.score = 0;
-                this.player2.nextDirection = "";
                 this.player2.direction = "right";
                 this.player2.snakes.push([5, 10]);
                 this.player2.snakes.push([4, 10]);
@@ -298,7 +316,17 @@ export default class extends BlazeComponent {
         //Draw P1 Snake
         this.player1.snakes.forEach((sn, index) => {
             if (index == 0) {
-                this.drawer.setBlock(sn[0], sn[1], 2);
+                if(this.$data.imgMode){
+                    if(this.player1.direction=="left"){
+                        this.drawer.setBlock(sn[0], sn[1], 26);
+                    }
+                    else{
+                        this.drawer.setBlock(sn[0], sn[1], 25);
+                    }
+                }
+                else{
+                    this.drawer.setBlock(sn[0], sn[1], 2);
+                }
             }
             else {
                 this.drawer.setBlock(sn[0], sn[1]);
@@ -308,7 +336,17 @@ export default class extends BlazeComponent {
         //Draw P2 Snake
         this.player2.snakes.forEach((sn, index) => {
             if (index == 0) {
-                this.drawer.setBlock(sn[0], sn[1], 3);
+                if(this.$data.imgMode){
+                    if(this.player2.direction=="left"){
+                        this.drawer.setBlock(sn[0], sn[1], 36);
+                    }
+                    else{
+                        this.drawer.setBlock(sn[0], sn[1], 35);
+                    }
+                }
+                else{
+                    this.drawer.setBlock(sn[0], sn[1], 3);
+                }
             }
             else {
                 this.drawer.setBlock(sn[0], sn[1]);
@@ -332,6 +370,7 @@ export default class extends BlazeComponent {
                         <button onClick={() => { this.$data.running = true; this.player2.direction = "right" }}>start 2p</button>
                     </div>
                 )}
+                <a style={{fontSize:5,color:"#cccccc"}} href="javascript:void(0)" onClick={() => { this.$data.imgMode = !this.$data.imgMode }}>dont Click me</a>
                 <Drawer onFrame={frames => { this.onFrame(frames) }} style={{ marginTop: 20 }} ref={instance => { this.drawer = instance }} xSize={this.xSize} ySize={this.ySize}></Drawer>
             </div>
         )

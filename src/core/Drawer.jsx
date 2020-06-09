@@ -35,9 +35,9 @@ export default class Drawer extends BlazeComponent {
     onFrame(){
         this.props.onFrame&&this.props.onFrame(this.frameCount++);
         requestAnimationFrame(()=>{this.onFrame()});
+        let objs=[];
         for(var y in this.display){
             for(var x in this.display[y]){
-                let code=this.display[y][x]
                 if(this.display[y][x]==0){
                     this.ctx.fillStyle="#fff";
                     this.ctx.fillRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
@@ -45,13 +45,27 @@ export default class Drawer extends BlazeComponent {
                     this.ctx.strokeStyle="#eee";
                     this.ctx.strokeRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
                 }
-                let color=this.colorStore[code];
-                if(color){
-                    this.ctx.fillStyle=color;
-                    this.ctx.fillRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
+                else{
+                    objs.push({x:x,y:y});
                 }
             }
         }
+
+        objs.forEach(item=>{
+            let code=this.display[item.y][item.x];
+            let color=this.colorStore[code];
+            if(typeof(color)=="object"&&color.tagName=="IMG"){
+                let posX=item.x * this.scaling;
+                let posY=item.y * this.scaling;
+                posX=posX-color.width/2;
+                posY=posY-color.height/2;
+                this.ctx.drawImage(color,0,0,color.naturalWidth,color.naturalHeight,posX, posY,color.width,color.height);
+            }
+            else if(color){
+                this.ctx.fillStyle=color;
+                this.ctx.fillRect(item.x * this.scaling, item.y * this.scaling, this.scaling, this.scaling);
+            }
+        });
     }
 
     componentDidMount(){
