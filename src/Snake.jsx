@@ -17,7 +17,7 @@ export default class extends BlazeComponent {
     }
     data() {
         return {
-            skipFrames:0,
+            skipFrames:5,
             running: false,
             tips: "Snake Game"
         }

@@ -32,9 +32,12 @@ export default class Drawer extends BlazeComponent {
                 if(this.display[y][x]==0){
                     this.ctx.fillStyle="#fff";
                     this.ctx.fillRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
+
+                    this.ctx.strokeStyle="#eee";
+                    this.ctx.strokeRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
                 }
                 else if(this.display[y][x]==1){
-                    this.ctx.fillStyle="#000";
+                    this.ctx.fillStyle="#444";
                     this.ctx.fillRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
                 }
             }
@@ -48,25 +51,14 @@ export default class Drawer extends BlazeComponent {
 
     setBlock(x, y, color) {
         this.display[y][x]=1;
-        //this.$data.display[y][x]=1
-        // var ctx = this.canvas.getContext("2d");
-        // if (!color) {
-        //     ctx.fillStyle = "#000";
-        // }
-        // else {
-        //     ctx.fillStyle = color;
-        // }
-        // ctx.fillRect(x * this.scaling, y * this.scaling, this.scaling, this.scaling);
     }
 
     delBlock(x, y) {
         this.display[y][x]=0;
-        //this.$data.display[y][x]=0
     }
 
     clearAll() {
-        //var ctx = this.canvas.getContext("2d");
-        //ctx.clearRect(0, 0, this.props.xSize * this.scaling, this.props.ySize * this.scaling);
+        this.frameCount=0;
         let r = [];
 
         for (var y = 0; y < this.props.ySize; y++) {
